@@ -42,6 +42,14 @@ public class IOTest {
     assertEquals(0, count.get());
   }
 
+  @Test
+  public void flatMapHappy() {
+    final IO<Integer> io = IO.succeed(() -> 10);
+    final IO<Integer> mapped = io.flatMap(i -> IO.succeed(() -> i + 10));
+    final Integer out = IORuntime.unsafeRun(mapped);
+    assertEquals((Integer) 20, out);
+  }
+
   @Test(expected = MyOtherError.class)
   public void mapError() {
     final IO<Integer> io = IO.fail(new MyError());
