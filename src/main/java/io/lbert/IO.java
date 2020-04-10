@@ -20,6 +20,10 @@ public class IO<A> {
     return zio;
   }
 
+  public static <A> IO<A> fromZIO(ZIO<Object, Throwable, A> zio) {
+    return of(zio);
+  }
+
   private static <A> IO<A> of(ZIO<Object, Throwable, A> zio) {
     return new IO<>(zio);
   }
@@ -29,7 +33,7 @@ public class IO<A> {
   }
 
   public static <A> IO<A> effect(Supplier<A> supplier) {
-    return of(ZIO.apply(supplier::get));
+    return of(ZIO.effect(supplier::get));
   }
 
   @SuppressWarnings("unchecked")
@@ -97,5 +101,21 @@ public class IO<A> {
     return eitherIO.flatMap(either ->
       either.fold(IO::fail, IO::succeed)
     );
+  }
+
+  public <B> IO<B> catchAll(Function<Throwable, IO<B>> catchAllFunc) {
+    return of(zio.catchAll(t -> catchAllFunc.apply(t).zio, CanFail.canFail()));
+  }
+
+  public <B> IO<B> orElse(Supplier<IO<B>> other) {
+    return catchAll(t -> other.get());
+  }
+
+  public <B> IO<B> fold(Function<Throwable, B> errorFunc, Function<A, B> successFunc) {
+    return this.map(successFunc).catchAll(t -> IO.succeed(errorFunc.apply(t)));
+  }
+
+  public <B> IO<B> foldM(Function<Throwable, IO<B>> errorFunc, Function<A, IO<B>> successFunc) {
+    return this.flatMap(successFunc).catchAll(errorFunc);
   }
 }

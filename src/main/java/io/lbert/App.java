@@ -1,14 +1,30 @@
 package io.lbert;
 
-import zio.ZIO;
+import lombok.Value;
 
 public class App {
 
   public static void main(String[] args) {
 
-    final var z = zio.ZIO.succeed(() -> 10);
+    final Program program = Program.of(Console.Live.of());
 
-    System.out.println("Testing IO unsafeRun");
+    IORuntime.unsafeRun(program.run());
+  }
 
+  @Value(staticConstructor = "of")
+  private static class Program {
+
+    Console console;
+
+    public IO<Unit> run() {
+
+      return console.putStrLn("Hi, this is a java ZIO test....").flatMap(u ->
+        console.putStrLn("What is your name?").flatMap(uu ->
+          console.getStrLn().flatMap(name ->
+            console.putStrLn("Hello " + name + ", nice to meet you")
+            )
+          )
+        );
+    }
   }
 }

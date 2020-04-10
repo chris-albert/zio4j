@@ -44,7 +44,7 @@ public class IOPlatform implements Platform {
   public Nothing$ reportFatal(Throwable t) {
     t.printStackTrace();
     try {
-      System.exit(-1);
+      java.lang.System.exit(-1);
       throw t;
     } catch (Throwable tt) {
       throw new RuntimeException(tt);
@@ -54,7 +54,7 @@ public class IOPlatform implements Platform {
   @Override
   public void reportFailure(Cause<Object> cause) {
     if(cause.died()) {
-      System.err.println(cause.prettyPrint());
+      java.lang.System.err.println(cause.prettyPrint());
     }
   }
 

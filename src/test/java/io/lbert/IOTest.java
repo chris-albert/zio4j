@@ -176,6 +176,71 @@ public class IOTest {
     assertEquals(Either.left(myError), IORuntime.unsafeRun(io.either()));
   }
 
+  @Test
+  public void catchAll() {
+    final var myError = new MyError();
+    final var io = IO.fail(myError);
+    final var fixed = io.catchAll(t -> IO.succeed(10));
+    assertEquals((Integer) 10, IORuntime.unsafeRun(fixed));
+  }
+
+  @Test
+  public void catchAllWithNoErrorShouldntCallFunc() {
+    final var io = IO.succeed(10);
+    final var count = new AtomicInteger(0);
+    final var fixed = io.catchAll(t -> {
+      count.incrementAndGet();
+      return IO.succeed(10);
+    });
+    assertEquals((Integer) 10, IORuntime.unsafeRun(fixed));
+    assertEquals(0, count.get());
+  }
+
+  @Test
+  public void orElse() {
+    final var myError = new MyError();
+    final var io = IO.fail(myError);
+    final var fixed = io.orElse(() -> IO.succeed(10));
+    assertEquals((Integer) 10, IORuntime.unsafeRun(fixed));
+  }
+
+  @Test
+  public void orElseWithSuccess() {
+    final var io = IO.succeed(10);
+    final var fixed = io.orElse(() -> IO.succeed(100));
+    assertEquals((Integer) 10, IORuntime.unsafeRun(fixed));
+  }
+
+  @Test
+  public void foldWithFailure() {
+    final var myError = new MyError();
+    final var io = IO.fail(myError);
+    final var fixed = io.fold(t -> 100, a -> 200);
+    assertEquals((Integer) 100, IORuntime.unsafeRun(fixed));
+  }
+
+  @Test
+  public void foldWithSuccess() {
+    final var io = IO.succeed(10);
+    final var fixed = io.fold(t -> 100, a -> 200);
+    assertEquals((Integer) 200, IORuntime.unsafeRun(fixed));
+  }
+
+  @Test
+  public void foldMWithFailure() {
+    final var myError = new MyError();
+    final var io = IO.fail(myError);
+    final var fixed = io.foldM(t -> IO.succeed(100), a -> IO.succeed(200));
+    assertEquals((Integer) 100, IORuntime.unsafeRun(fixed));
+  }
+
+  @Test
+  public void foldMWithSuccess() {
+    final var io = IO.succeed(10);
+    final var fixed = io.foldM(t -> IO.succeed(100), a -> IO.succeed(200));
+    assertEquals((Integer) 200, IORuntime.unsafeRun(fixed));
+  }
+
   public static class MyError extends Throwable {}
   public static class MyOtherError extends Throwable {}
 }
