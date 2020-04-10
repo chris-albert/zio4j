@@ -115,6 +115,13 @@ public class IOTest {
     assertEquals(ImmutableList.of(2,3,4,5), out);
   }
 
+  @Test
+  public void fromOptionSome() {
+    final var some = Option.some(10);
+    final var io = IO.fromOption(some, new MyError());
+    assertEquals((Integer) 10, IORuntime.unsafeRun(io));
+  }
+
   public static class MyError extends Throwable {}
   public static class MyOtherError extends Throwable {}
 }

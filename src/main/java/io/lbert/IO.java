@@ -76,4 +76,8 @@ public class IO<A> {
       .map(sl -> ImmutableList.copyOf(CollectionConverters.IterableHasAsJava(sl).asJava()))
     );
   }
+
+  public static <A> IO<A> fromOption(Option<A> opt, Throwable ifNone) {
+    return null;
+  }
 }
