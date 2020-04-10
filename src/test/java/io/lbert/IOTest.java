@@ -100,6 +100,22 @@ public class IOTest {
   }
 
   @Test
+  public void zipRight() {
+    final IO<Integer> io1 = IO.succeed(10);
+    final IO<Integer> io2 = IO.succeed(11);
+    final IO<Integer> zippedRight = io1.zipRight(io2);
+    assertEquals((Integer) 11, IORuntime.unsafeRun(zippedRight));
+  }
+
+  @Test
+  public void zipLeft() {
+    final IO<Integer> io1 = IO.succeed(10);
+    final IO<Integer> io2 = IO.succeed(11);
+    final IO<Integer> zippedRight = io1.zipLeft(io2);
+    assertEquals((Integer) 10, IORuntime.unsafeRun(zippedRight));
+  }
+
+  @Test
   public void foreach() {
     final ImmutableList<Integer> list = ImmutableList.of(1, 2, 3, 4);
     final IO<ImmutableList<Integer>> eached = IO.foreach(list, incrementIOFunction);
@@ -120,6 +136,44 @@ public class IOTest {
     final var some = Option.some(10);
     final var io = IO.fromOption(some, new MyError());
     assertEquals((Integer) 10, IORuntime.unsafeRun(io));
+  }
+
+  @Test
+  public void fromOptionNone() {
+    final var myError = new MyError();
+    final var none = Option.none();
+    final var io = IO.fromOption(none, myError);
+    assertEquals(Either.left(myError), IORuntime.unsafeRun(io.either()));
+  }
+
+  @Test
+  public void fromEitherRight() {
+    final Either<Throwable, Integer> right = Either.right(10);
+    final var io = IO.fromEither(right);
+    assertEquals((Integer) 10, IORuntime.unsafeRun(io));
+  }
+
+  @Test
+  public void fromEitherLeft() {
+    final var myError = new MyError();
+    final Either<Throwable, Integer> left = Either.left(myError);
+    final var io = IO.fromEither(left);
+    assertEquals(Either.left(myError), IORuntime.unsafeRun(io.either()));
+  }
+
+  @Test
+  public void absolveRight() {
+    final IO<Either<Throwable, Integer>> right = IO.succeed(Either.right(10));
+    final var io = IO.absolve(right);
+    assertEquals((Integer) 10, IORuntime.unsafeRun(io));
+  }
+
+  @Test
+  public void absolveLeft() {
+    final var myError = new MyError();
+    final IO<Either<Throwable, Integer>> left = IO.succeed(Either.left(myError));
+    final var io = IO.absolve(left);
+    assertEquals(Either.left(myError), IORuntime.unsafeRun(io.either()));
   }
 
   public static class MyError extends Throwable {}

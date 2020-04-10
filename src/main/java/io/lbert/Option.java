@@ -14,6 +14,7 @@ public interface Option<A> {
   default boolean isEmpty() {
     return !isDefined();
   }
+  <B> B fold(Function<A, B> someFunc, Supplier<B> noneFunc);
 
   @SuppressWarnings("unchecked")
   static <A> None<A> none() {
@@ -56,6 +57,11 @@ public interface Option<A> {
     @Override
     public boolean isDefined() {
       return true;
+    }
+
+    @Override
+    public <B> B fold(Function<A, B> someFunc, Supplier<B> noneFunc) {
+      return someFunc.apply(value);
     }
 
     @Override
@@ -104,6 +110,11 @@ public interface Option<A> {
     @Override
     public boolean isDefined() {
       return false;
+    }
+
+    @Override
+    public <B> B fold(Function<A, B> someFunc, Supplier<B> noneFunc) {
+      return noneFunc.get();
     }
 
     @Override

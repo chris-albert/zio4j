@@ -63,6 +63,14 @@ public class IO<A> {
     );
   }
 
+  public <B> IO<B> zipRight(IO<B> ioB) {
+    return zip(ioB).map(Tuple::get_2);
+  }
+
+  public <B> IO<A> zipLeft(IO<B> ioB) {
+    return zip(ioB).map(Tuple::get_1);
+  }
+
   public static <A, B> IO<ImmutableList<B>> foreach(Iterable<A> it, Function<A, IO<B>> func) {
     return of(ZIO
       .foreach(CollectionConverters.IterableHasAsScala(it).asScala(), a -> func.apply(a).zio)
@@ -78,6 +86,16 @@ public class IO<A> {
   }
 
   public static <A> IO<A> fromOption(Option<A> opt, Throwable ifNone) {
-    return null;
+    return opt.fold(IO::succeed, () -> IO.fail(ifNone));
+  }
+
+  public static <A> IO<A> fromEither(Either<Throwable, A> either) {
+    return either.fold(IO::fail, IO::succeed);
+  }
+
+  public static <A> IO<A> absolve(IO<Either<Throwable, A>> eitherIO) {
+    return eitherIO.flatMap(either ->
+      either.fold(IO::fail, IO::succeed)
+    );
   }
 }
