@@ -1,12 +1,10 @@
 package io.lbert;
 
 import com.google.common.collect.ImmutableList;
-import scala.collection.JavaConverters;
 import scala.jdk.CollectionConverters;
 import zio.CanFail;
 import zio.ZIO;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -26,12 +24,12 @@ public class IO<A> {
     return new IO<>(zio);
   }
 
-  public static <A> IO<A> succeed(Supplier<A> supplier) {
-    return of(ZIO.apply(supplier::get));
+  public static <A> IO<A> succeed(A value) {
+    return of(ZIO.apply(() -> value));
   }
 
   public static <A> IO<A> effect(Supplier<A> supplier) {
-    return succeed(supplier);
+    return of(ZIO.apply(supplier::get));
   }
 
   @SuppressWarnings("unchecked")
