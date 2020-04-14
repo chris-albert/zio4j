@@ -118,4 +118,5 @@ public class IO<A> {
   public <B> IO<B> foldM(Function<Throwable, IO<B>> errorFunc, Function<A, IO<B>> successFunc) {
     return this.flatMap(successFunc).catchAll(errorFunc);
   }
+
 }

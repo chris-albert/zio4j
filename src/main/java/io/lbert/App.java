@@ -17,14 +17,11 @@ public class App {
     Console console;
 
     public IO<Unit> run() {
-
-      return console.putStrLn("Hi, this is a java ZIO test....").flatMap(u ->
-        console.putStrLn("What is your name?").flatMap(uu ->
-          console.getStrLn().flatMap(name ->
-            console.putStrLn("Hello " + name + ", nice to meet you")
-            )
-          )
-        );
+      return console.putStrLn("Hi, this is a java ZIO test....")
+        .flatMap(u    -> console.putStrLn("What is your name?"))
+        .flatMap(uu   -> console.getStrLn())
+        .flatMap(name -> console.putStrLn("Hello " + name + ", nice to meet you"))
+      ;
     }
   }
 }
