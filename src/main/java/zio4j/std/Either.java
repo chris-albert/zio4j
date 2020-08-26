@@ -1,7 +1,8 @@
-package io.lbert;
+package zio4j.std;
 
 import lombok.NonNull;
 import lombok.Value;
+
 import java.util.function.Function;
 
 public interface Either<L, R> {

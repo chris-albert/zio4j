@@ -1,6 +1,7 @@
-package io.lbert;
+package zio4j;
 
 import lombok.Value;
+import zio4j.std.Unit;
 
 public class App {
 
@@ -8,7 +9,7 @@ public class App {
 
     final Program program = Program.of(Console.Live.of());
 
-    IORuntime.unsafeRun(program.run());
+    ZIO4JRuntime.unsafeRun(program.run());
   }
 
   @Value(staticConstructor = "of")
@@ -16,7 +17,7 @@ public class App {
 
     Console console;
 
-    public IO<Unit> run() {
+    public Task<Unit> run() {
       return console.putStrLn("Hi, this is a java ZIO test....")
         .flatMap(u    -> console.putStrLn("What is your name?"))
         .flatMap(uu   -> console.getStrLn())

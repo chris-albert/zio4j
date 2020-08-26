@@ -1,9 +1,12 @@
-package io.lbert;
+package zio4j;
 
 import com.google.common.collect.ImmutableList;
 import scala.jdk.CollectionConverters;
 import zio.CanFail;
 import zio.ZIO;
+import zio4j.std.Either;
+import zio4j.std.Option;
+import zio4j.std.tuple.Tuple2;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -60,19 +63,19 @@ public class IO<A> {
     return of(zio.mapError(func::apply, CanFail.canFail()));
   }
 
-  public <B> IO<Tuple<A, B>> zip(IO<B> ioB) {
+  public <B> IO<Tuple2<A, B>> zip(IO<B> ioB) {
     return of(
       zio.zip(ioB.zio)
-        .map(t -> Tuple.of(t._1, t._2))
+        .map(t -> Tuple2.of(t._1, t._2))
     );
   }
 
   public <B> IO<B> zipRight(IO<B> ioB) {
-    return zip(ioB).map(Tuple::get_2);
+    return zip(ioB).map(Tuple2::get_2);
   }
 
   public <B> IO<A> zipLeft(IO<B> ioB) {
-    return zip(ioB).map(Tuple::get_1);
+    return zip(ioB).map(Tuple2::get_1);
   }
 
   public static <A, B> IO<ImmutableList<B>> foreach(Iterable<A> it, Function<A, IO<B>> func) {

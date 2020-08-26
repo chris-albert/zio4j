@@ -1,8 +1,8 @@
-package io.lbert;
+package zio4j.std;
 
 public class Unit {
 
-  private static final Unit Instance = new Unit();
+  private static final Unit Instance = Unit.of();
 
   private Unit () { }
 

@@ -1,4 +1,4 @@
-package io.lbert;
+package zio4j;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.Value;

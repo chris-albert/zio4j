@@ -1,4 +1,4 @@
-package io.lbert;
+package zio4j;
 
 import scala.concurrent.ExecutionContext;
 import scala.runtime.Nothing$;
@@ -12,14 +12,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class IOPlatform implements Platform {
+public class ZIO4JPlatform implements Platform {
 
   private static final Integer defaultYieldOpCount = 2048;
 
-  private IOPlatform() { }
+  private ZIO4JPlatform() { }
 
-  public static IOPlatform of() {
-    return new IOPlatform();
+  public static ZIO4JPlatform of() {
+    return new ZIO4JPlatform();
   }
 
   @Override

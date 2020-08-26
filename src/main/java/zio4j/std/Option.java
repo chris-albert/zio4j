@@ -1,4 +1,4 @@
-package io.lbert;
+package zio4j.std;
 
 import lombok.NonNull;
 
