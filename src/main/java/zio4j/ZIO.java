@@ -1,11 +1,15 @@
 package zio4j;
 
+import zio.CanFail;
 import zio4j.std.Either;
 import zio4j.std.Nothing;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ZIO<R, E, A> {
+
+  private final CanFail<E> canFail = CanFail.canFail();
 
   private final zio.ZIO<R, E, A> underlying;
 
@@ -38,10 +42,21 @@ public class ZIO<R, E, A> {
     return of((zio.ZIO<Object, E, A> )zio.ZIO.fail(() -> error));
   }
 
-  public ZIO<Object, Nothing, Either<E, A>> either() {
+//  public ZIO<R, Nothing, Either<E, A>> either() {
+//    var a = (ZIO<R, Nothing, Either<E, A>>) of(underlying().either(CanFail.canFail())
+//        .map(Either::fromScala));
+//    return null;
+//  }
 
-    return null;
+  public <B> ZIO<R, E, B> map(Function<A, B> func) {
+    return of(underlying.map(func::apply));
   }
 
+  public <B> ZIO<R, E, B> flatMap(Function<A, ZIO<R, E, B>> func) {
+    return of(underlying.flatMap(a -> func.apply(a).underlying));
+  }
 
+  public <EE> ZIO<R, EE, A> mapError(Function<E, EE> func) {
+    return of(underlying.mapError(func::apply, canFail));
+  }
 }

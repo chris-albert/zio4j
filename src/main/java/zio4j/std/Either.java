@@ -27,6 +27,10 @@ public interface Either<L, R> {
 
   Option<R> rightOption();
 
+  static <L, R> Either<L, R> fromScala(scala.util.Either<L, R> either) {
+    return either.fold(Either::left, Either::right);
+  }
+
   @NonNull
   static <L, R> Either<L, R> right(R r) {
     return Right.of(r);

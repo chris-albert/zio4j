@@ -11,7 +11,7 @@ final Task<Integer> task = Task.succeed(10);
 
 and you can create a failed effect
 ```java
-final Task<Integer> task = Taskfail(new Throwable());
+final Task<Integer> task = Task.fail(new Throwable());
 ```
 
 There are lots more examples in the [tests](https://github.com/chris-albert/zio4j/blob/master/src/test/java/zio4j.TaskTest.java)
